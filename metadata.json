@@ -1,0 +1,6 @@
+{
+  "name": "LabLink - Mindray, URIT, Maxion, MaxCoag, Wama & Finecare LIS Suite",
+  "description": "Interface e servidor LIS para equipamentos laboratoriais (Mindray BC-5480 Hematologia, URIT-8021A Bioquímica, Maxion Eletrólitos ISE, MaxCoag Coagulometria, Wama Uroanálise e Wondfo Finecare POCT) com simulador de exames, decodificador HL7/ASTM/RS232 e gerenciador de Worklist.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
