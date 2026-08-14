@@ -247,6 +247,16 @@ function processMatchedSample(res: MindraySampleResult): MindraySampleResult {
   return res;
 }
 
+// Helper function to resolve LIS Base URL from HOST_LIS or LIS_HOST environment variable
+function getLisBaseUrl(): string {
+  let host = process.env.HOST_LIS || process.env.LIS_HOST || '186.237.152.170:3000';
+  host = host.trim();
+  if (!host.startsWith('http://') && !host.startsWith('https://')) {
+    host = `http://${host}`;
+  }
+  return host.replace(/\/+$/, '');
+}
+
 // REST LIS Integration: Send equipment results back to external LIS endpoint with De/Para mapping
 async function sendResultToExternalLis(res: MindraySampleResult, equipmentFamily?: string): Promise<void> {
   const sid = res.sampleId;
@@ -319,8 +329,9 @@ async function sendResultToExternalLis(res: MindraySampleResult, equipmentFamily
     examGroups.get(groupExamCode)!.push(item);
   }
 
-  const primaryUrl = 'http://186.237.152.170:3000/api/amostra/resultado';
-  const secondaryUrl = 'http://186.237.152.170:3000/api/interfaceamento/amostra/resultado';
+  const lisBaseHost = getLisBaseUrl();
+  const primaryUrl = `${lisBaseHost}/api/amostra/resultado`;
+  const secondaryUrl = `${lisBaseHost}/api/interfaceamento/amostra/resultado`;
 
   for (const [groupExamCode, items] of examGroups.entries()) {
     const valores = items.map(it => ({
@@ -525,7 +536,7 @@ async function fetchAndRegisterOrderFromExternalLis(sampleCode: string, equipmen
   const { equipmentCode, equipmentFamily } = await resolveEquipmentCode(equipmentHint);
 
   // POST request to external LIS REST endpoint
-  const url = process.env.LIS_REST_SAMPLE_URL || 'http://186.237.152.170:3000/api/amostra';
+  const url = `${getLisBaseUrl()}/api/amostra`;
   const payload = {
     codigoAmostra: cleanCode,
     equipamento: equipmentCode
